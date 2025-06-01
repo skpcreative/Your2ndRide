@@ -1,0 +1,112 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%; /* Light mode background - White */
+    --foreground: 224 71.4% 4.1%; /* Light mode text - Dark Blue/Black */
+
+    --card: 0 0% 100%; /* Card background */
+    --card-foreground: 224 71.4% 4.1%; /* Card text */
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+
+    --primary: 262.1 83.3% 57.8%; /* Vibrant Purple */
+    --primary-foreground: 0 0% 100%; /* White text on primary */
+
+    --secondary: 210 40% 96.1%; /* Light Grayish Blue */
+    --secondary-foreground: 222.2 47.4% 11.2%; /* Dark Blue/Black text on secondary */
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%; /* Muted text color */
+
+    --accent: 30 94% 50%; /* Vibrant Orange */
+    --accent-foreground: 0 0% 100%; /* White text on accent */
+
+    --destructive: 0 84.2% 60.2%; /* Red for destructive actions */
+    --destructive-foreground: 0 0% 100%; /* White text on destructive */
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 262.1 83.3% 57.8%; /* Ring color matching primary */
+
+    --radius: 0.75rem; /* Slightly larger radius for modern feel */
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%; /* Dark mode background - Dark Blue/Black */
+    --foreground: 0 0% 98%; /* Dark mode text - Almost White */
+
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 262.1 83.3% 57.8%; /* Vibrant Purple (can remain same or adjust) */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 222.2 47.4% 11.2%; /* Darker secondary for dark mode */
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 222.2 47.4% 11.2%;
+    --muted-foreground: 215.4 16.3% 56.9%; /* Adjusted muted text for dark mode */
+
+    --accent: 30 94% 50%; /* Vibrant Orange (can remain same or adjust) */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%; /* Darker red for dark mode */
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 262.1 83.3% 57.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif; /* Consider adding Inter via Google Fonts or similar */
+  }
+  
+  /* Custom scrollbar for a more modern look */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background) / 0.5);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.7);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+  }
+}
+
+/* Example of a gradient text utility */
+.text-gradient-purple-orange {
+  @apply bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 text-transparent bg-clip-text;
+}
+
+.glassmorphism-card {
+  @apply bg-white/30 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg;
+}
+
+.neumorphism-button {
+  @apply rounded-lg bg-gray-100 p-4 shadow-[5px_5px_10px_#bebebe,-5px_-5px_10px_#ffffff] hover:shadow-[inset_5px_5px_10px_#bebebe,inset_-5px_-5px_10px_#ffffff] transition-shadow;
+}
+.dark .neumorphism-button {
+   @apply bg-gray-800 shadow-[5px_5px_10px_#1f2937,-5px_-5px_10px_#4b5563] hover:shadow-[inset_5px_5px_10px_#1f2937,inset_-5px_-5px_10px_#4b5563];
+}
+
