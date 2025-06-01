@@ -6,7 +6,7 @@ import db from '@/lib/chatDB';
 // Create a single socket instance to be shared across components
 let socket;
 if (!socket) {
-  socket = io('http://localhost:5000', { autoConnect: false });
+  socket = io(import.meta.env.VITE_CHAT_SERVER_URL, { autoConnect: false });
 }
 
 export const useChat = (roomId) => {
