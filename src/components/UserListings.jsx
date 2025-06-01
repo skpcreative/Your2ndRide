@@ -22,12 +22,20 @@ const UserListings = () => {
     if (!confirm('Are you sure you want to delete this listing?')) return;
     
     try {
-      const { error } = await supabase.rpc('delete_vehicle_listing', {
-        listing_id_param: id,
-        user_id_param: supabase.auth.getUser().then(({ data }) => data.user.id)
-      });
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) throw new Error('User not authenticated');
+      
+      const { error } = await supabase
+        .from('vehicle_listings')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
       
       if (error) throw error;
+      
+      // Refresh the listings
+      window.location.reload();
       
       toast({
         title: 'Listing Deleted',
