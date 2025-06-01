@@ -71,23 +71,11 @@ const ListingDetailPage = () => {
     if (!user) {
       toast({
         title: "Authentication Required",
-        description: "Please log in to contact the seller.",
+        description: "Please log in to chat with the seller.",
         variant: "destructive"
       });
       navigate('/login', { state: { from: `/listing/${id}` } });
       return;
-    }
-    
-    if (listing.phone) {
-      toast({
-        title: "Contact Information",
-        description: `Seller's phone: ${listing.phone}`,
-      });
-    } else {
-      toast({
-        title: "Contact Seller",
-        description: "Chat functionality will be implemented soon to connect you with the seller!",
-      });
     }
   };
 
@@ -231,25 +219,12 @@ const ListingDetailPage = () => {
               <p className="text-4xl font-bold text-orange-400 text-center">₹{parseFloat(listing.price).toLocaleString()}</p>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button onClick={handleContactSeller} size="lg" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                {listing.phone ? (
-                  <>
-                    <Phone className="mr-2 h-5 w-5" /> Call Seller
-                  </>
-                ) : (
-                  <>
-                    <MessageSquare className="mr-2 h-5 w-5" /> Contact Seller
-                  </>
-                )}
-              </Button>
-              
-              {/* Chat Button */}
-              <div className="mt-2">
-                <ChatButton listing={{
-                  ...listing,
-                  seller_name: listing.profiles?.full_name || "Seller"
-                }} />
-              </div>
+              <ChatButton
+                recipientId={listing.userId}
+                listingId={listing.id}
+                className="w-full"
+                onAuthRequired={handleContactSeller}
+              />
               <Button 
                 onClick={handleWishlistToggle} 
                 variant="outline" 
