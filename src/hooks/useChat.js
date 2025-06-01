@@ -40,6 +40,11 @@ export const useChat = (roomId) => {
         setConnected(true);
         console.log('Connected to chat server');
         
+        // Register user with their ID
+        if (user?.id) {
+          socket.emit('registerUser', user.id);
+        }
+        
         // Join the room
         socket.emit('joinRoom', roomId);
       }
@@ -87,11 +92,35 @@ export const useChat = (roomId) => {
     // Load existing messages from IndexedDB
     loadMessages();
 
+    // Handle new message notifications
+    const handleNewMessageNotification = (notification) => {
+      if (!isMounted.current) return;
+      
+      // Check if this notification is for the current user
+      if (notification.recipientId === user?.id) {
+        console.log('New message notification:', notification);
+        
+        // If we're not already in this room, join it
+        if (notification.roomId !== roomId) {
+          // This is for a different chat room - we could trigger a notification here
+          // For now, we'll just log it
+          console.log(`New message in room ${notification.roomId} from ${notification.senderName}`);
+          
+          // You could dispatch a custom event or use a notification context here
+          const event = new CustomEvent('newChatMessage', { 
+            detail: notification 
+          });
+          window.dispatchEvent(event);
+        }
+      }
+    };
+    
     // Set up event listeners
     socket.on('connect', handleConnect);
     socket.on('connect_error', handleConnectError);
     socket.on('disconnect', handleDisconnect);
     socket.on('receiveMessage', handleReceiveMessage);
+    socket.on('newMessageNotification', handleNewMessageNotification);
 
     // If already connected, manually trigger the connect handler
     if (socket.connected) {
@@ -107,6 +136,7 @@ export const useChat = (roomId) => {
       socket.off('connect_error', handleConnectError);
       socket.off('disconnect', handleDisconnect);
       socket.off('receiveMessage', handleReceiveMessage);
+      socket.off('newMessageNotification', handleNewMessageNotification);
       
       // Don't disconnect the socket here, as it might be used by other components
       // Just leave the room instead

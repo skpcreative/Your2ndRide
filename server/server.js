@@ -9,14 +9,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:4173',
-      'https://your2ndride.vercel.app',
-      'https://your2ndride-*.vercel.app'
-    ],
-    methods: ['GET', 'POST'],
-    credentials: true
+    origin: "*",
   },
 });
 

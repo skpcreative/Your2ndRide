@@ -8,6 +8,7 @@ import { useNotification } from '@/context/NotificationContext';
 import { supabase } from '@/lib/supabaseClient';
 import LogoutButton from '@/components/LogoutButton';
 import { Badge } from '@/components/ui/badge';
+import { ChatNotifications } from '@/components/chat/ChatNotifications';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -124,7 +125,10 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center space-x-3">
             {isAuthenticated ? (
-              <LogoutButton className="border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white" />
+              <>
+                <ChatNotifications />
+                <LogoutButton className="border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white" />
+              </>
             ) : loading ? (
               <div className="animate-pulse w-24 h-10 bg-slate-700 rounded-md"></div>
             ) : (

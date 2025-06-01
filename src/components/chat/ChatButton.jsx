@@ -4,13 +4,28 @@ import { MessageCircle } from 'lucide-react';
 import { ChatModal } from './ChatModal';
 import { useAuth } from '@/context/AuthContext';
 
-export function ChatButton({ listing, recipientId, listingId, className }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export function ChatButton({ listing, recipientId, listingId, className, isOpen, onOpenChange, onAuthRequired }) {
+  const [isModalOpen, setIsModalOpen] = useState(isOpen || false);
   const { user } = useAuth();
   
   // If listing object is provided, use its properties
   const sellerId = listing?.user_id || recipientId;
   const actualListingId = listing?.id || listingId;
+  
+  // Handle external control of modal state
+  useEffect(() => {
+    if (isOpen !== undefined) {
+      setIsModalOpen(isOpen);
+    }
+  }, [isOpen]);
+  
+  // Notify parent component when modal state changes
+  const handleModalStateChange = (state) => {
+    setIsModalOpen(state);
+    if (onOpenChange) {
+      onOpenChange(state);
+    }
+  };
   
   // Don't show chat button if user is the seller or if user is not logged in
   if (!user || user.id === sellerId) {
@@ -20,7 +35,7 @@ export function ChatButton({ listing, recipientId, listingId, className }) {
   return (
     <>
       <Button 
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => handleModalStateChange(true)}
         variant="outline"
         size="sm"
         className={`flex items-center gap-1 ${className || ''}`}
@@ -31,7 +46,7 @@ export function ChatButton({ listing, recipientId, listingId, className }) {
       
       <ChatModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => handleModalStateChange(false)}
         listingId={actualListingId}
         sellerId={sellerId}
         sellerName={listing?.seller_name || 'Seller'}

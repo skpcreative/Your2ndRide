@@ -21,6 +21,44 @@ export const NotificationProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : {};
   });
 
+  // Listen for new chat message notifications
+  useEffect(() => {
+    const handleNewChatMessage = (event) => {
+      const notification = event.detail;
+      
+      // Only process notifications for the current user
+      if (user?.id === notification.recipientId) {
+        // Update unread chats
+        setUnreadChats(prev => {
+          const updated = { ...prev };
+          if (!updated[notification.roomId]) {
+            updated[notification.roomId] = {
+              count: 0,
+              lastMessage: null,
+              senderId: notification.senderId,
+              senderName: notification.senderName,
+              listingId: notification.listingId
+            };
+          }
+          
+          updated[notification.roomId].count += 1;
+          updated[notification.roomId].lastMessage = notification.timestamp;
+          
+          return updated;
+        });
+        
+        // Update total unread count
+        setUnreadCount(prev => prev + 1);
+      }
+    };
+    
+    window.addEventListener('newChatMessage', handleNewChatMessage);
+    
+    return () => {
+      window.removeEventListener('newChatMessage', handleNewChatMessage);
+    };
+  }, [user]);
+
   // Load unread messages count
   useEffect(() => {
     if (!user) {

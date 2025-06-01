@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
@@ -29,12 +29,21 @@ const extractFeatures = (description) => {
 const ListingDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
   const { listing, loading, error } = useVehicleDetail(id);
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  
+  // Check if we should open chat from navigation state
+  useEffect(() => {
+    if (location.state?.openChat && user) {
+      setIsChatOpen(true);
+    }
+  }, [location.state, user]);
 
   // Show loading state
   if (loading) {
@@ -224,6 +233,8 @@ const ListingDetailPage = () => {
                 listingId={listing.id}
                 className="w-full"
                 onAuthRequired={handleContactSeller}
+                isOpen={isChatOpen}
+                onOpenChange={setIsChatOpen}
               />
               <Button 
                 onClick={handleWishlistToggle} 
